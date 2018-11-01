@@ -5,6 +5,12 @@ admin:
     socket_address: 
       address: "127.0.0.1"
       port_value: 9901
+stats_sinks:
+  -
+    name: "envoy.statsd"
+    config:
+      tcp_cluster_name: "statsd-exporter"
+      prefix: front-envoy    
 static_resources: 
   listeners:
     - 
@@ -45,6 +51,16 @@ static_resources:
                   - 
                     name: "envoy.router"
   clusters:
+    -
+      name: "statsd-exporter"
+      connect_timeout: "0.25s"
+      type: "strict_dns"
+      lb_policy: "ROUND_ROBIN"
+      hosts:
+        -
+          socket_address:
+            address: "statsd_exporter"
+            port_value: 9125
     - 
       name: "service_a"
       connect_timeout: "0.25s"

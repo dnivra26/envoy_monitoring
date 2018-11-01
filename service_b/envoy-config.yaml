@@ -1,3 +1,9 @@
+stats_sinks:
+  -
+    name: "envoy.statsd"
+    config:
+      tcp_cluster_name: "statsd-exporter"
+      prefix: service-b
 admin:
   access_log_path: "/tmp/admin_access.log"
   address:
@@ -44,7 +50,16 @@ static_resources:
                     name: "envoy.router"
     
   clusters:
-      
+      -
+        name: "statsd-exporter"
+        connect_timeout: "0.25s"
+        type: "strict_dns"
+        lb_policy: "ROUND_ROBIN"
+        hosts:
+          -
+            socket_address:
+              address: "statsd_exporter"
+              port_value: 9125
       -
         name: "service_b"
         connect_timeout: "0.25s"

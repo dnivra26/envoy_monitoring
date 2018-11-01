@@ -1,9 +1,9 @@
-tracing:
-  http:
-    name: envoy.zipkin
+stats_sinks:
+  -
+    name: "envoy.statsd"
     config:
-      collector_cluster: zipkin
-      collector_endpoint: "/api/v1/spans"
+      tcp_cluster_name: "statsd-exporter"
+      prefix: service-a    
 admin:
   access_log_path: "/tmp/admin_access.log"
   address:
@@ -25,8 +25,6 @@ static_resources:
             -
               name: "envoy.http_connection_manager"
               config:
-                tracing:
-                  operation_name: ingress
                 access_log:
                 - name: envoy.file_access_log
                   config:
@@ -62,8 +60,6 @@ static_resources:
             -
               name: "envoy.http_connection_manager"
               config:
-                tracing:
-                  operation_name: egress
                 access_log:
                 - name: envoy.file_access_log
                   config:
@@ -100,8 +96,6 @@ static_resources:
             -
               name: "envoy.http_connection_manager"
               config:
-                tracing:
-                  operation_name: egress
                 access_log:
                 - name: envoy.file_access_log
                   config:
@@ -126,17 +120,16 @@ static_resources:
                   -
                     name: "envoy.router"                                
   clusters:
-      - 
-        name: zipkin
-        connect_timeout: 0.25s
-        type: strict_dns
-        lb_policy: round_robin
+      -
+        name: "statsd-exporter"
+        connect_timeout: "0.25s"
+        type: "strict_dns"
+        lb_policy: "ROUND_ROBIN"
         hosts:
-        - 
-          socket_address:
-            address: zipkin
-            port_value: 9411
-      
+          -
+            socket_address:
+              address: "statsd_exporter"
+              port_value: 9125
       -
         name: "service_a"
         connect_timeout: "0.25s"

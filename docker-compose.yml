@@ -48,3 +48,9 @@ services:
     build: service_c/
     ports:
     - "8083:8083"
+
+  statsd_exporter:
+    image: prom/statsd-exporter:latest
+    ports:
+    - "9125:9125"
+    - "9102:9102"
