@@ -54,3 +54,11 @@ services:
     ports:
     - "9125:9125"
     - "9102:9102"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/config.yaml:/etc/prometheus.yaml
+    ports:
+    - "9090:9090"
+    command: "--config.file=/etc/prometheus.yaml"
