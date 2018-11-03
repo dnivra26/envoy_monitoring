@@ -3,7 +3,7 @@ apiVersion: 1
 datasources:
   - name: prometheus
     type: prometheus
-    access: Server
+    access: proxy
     url: http://prometheus:9090
     editable: true
     isDefault:
